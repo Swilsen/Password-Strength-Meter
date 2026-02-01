@@ -48,7 +48,7 @@ function updateStrengthMeter() {
 
   // Gives positive feedback if the entropy score is over 90.
   if (entropyScore > 90) {
-    noApparentWeakness.innerText = "Your password is very strong with no detrimental weakness affecting password strength."
+    noApparentWeakness.innerText = "Your password is very strong!"
     noApparentWeakness.style.color = "lightgreen"
   }
 }
@@ -331,13 +331,13 @@ function lengthWeakness(password) {
   const length = password.length
   if (length <= 7) {
     return {
-      message: 'Your password is way too short. Using this few characters makes it very easy to guess your password. Try to include at least 8-10 characters.',
+      message: 'Your password is way too short. Using this few characters makes it very easy to guess your password. Try to include a minimum of 8-10 characters.',
       calculation: 20
     }
   }
   if (length <= 11) {
     return {
-      message: 'Your password could still be longer. Using 12 or more characters is preferable and ensures good password strength.',
+      message: 'Your password could be longer. Using 12 or more characters is preferable for promoting good password hygiene.',
       calculation: 10
     }
   }
@@ -347,11 +347,16 @@ function lengthWeakness(password) {
   }
 }
 
-// The following four functions utilizes regular expressions and creates individual instances of the inclusion
+// The following four functions uses regular expressions and creates individual instances of the exclusion
 // of uppercase letters, lowercase letters, digits, and symbols in the chosen password respectively.
-// They are used to calculate entropy based on the utilized character set in the password.
+
+// They are used to calculate entropy based on the utilized character set of the password.
+
 // Each singular apparance of an uppercase, lowercase, digit or symbol character will increase the character set by
 // 26, 26, 10, and 32 respectively, potentially achieveing a total character set of 94.
+
+// This is due to there being 26 lowercase letters, 26 uppercase letters, 10 digits, and 32 different symbols
+// that can be used in a password using an english QWERTY keyboard.
 function uppercaseWeakness(password) {
   const weakness = characterTypeWeakness(password, /[A-Z]/g, 'uppercase characters')
   if (weakness) {
@@ -410,7 +415,7 @@ function symbolWeakness(password) {
 
 /**
  * This function utilizes the four functions above as pointers in order to return a message
- * depending on if the type of character is not used in the password.
+ * depending on whether the type of character is not used in the password.
  * 
  * @param {string} password 
  * @param {RegExp} regex 
@@ -445,7 +450,7 @@ function repeatCharactersWeakness(password) {
     // Returns here if two of the same character has been used in a row.
     if (oneMatch.length > 0) {
       return {
-        message: 'Your password contains some repeated characters. Making sure to include many unique characters will strengthen your password.',
+        message: 'Your password contains some repeated characters. Including many unique characters will strengthen your password.',
         calculation: 10
       }
     }
@@ -487,13 +492,13 @@ function sequenceCharactersWeakness(password) {
     // Exits the if function if both ascending and descending weaknesses are found.
     if (ascendingSequence && descendingSequence) {
       return {
-        message: 'Your password contains both ascending and descending sequences of 3 characters. Using several sequences makes it much easier to guess.',
+        message: 'Your password contains alphanumeric ascending and descending sequences of 3 characters, making it much easier to guess.',
         calculation: 25
       }
       // Exits here if either weakness are found.
     } else if (ascendingSequence || descendingSequence) {
       return {
-        message: 'Your password contains a sequence of 3 characters. Using sequences weakens your password by making it more predictable.',
+        message: 'Your password contains an alphanumeric sequence of 3 characters. Patterns weakens your password by making it more predictable.',
         calculation: 15
       }
       // Returns here if no sequences are used.
@@ -599,7 +604,7 @@ function closeKeyWeakness(password) {
         break
       }
     }
-    // Returns here if there are 5 or more characters in the password being adjacent to one another
+    // Returns here if there are 5 or more characters in the password are adjacent to a previous character.
     if (hasCloseKeys) {
       return {
         message: 'Your password uses keyboard sequences, and should not be used to artificially lengthen passwords. Instead use a word or phrase unique to you.',
@@ -607,7 +612,7 @@ function closeKeyWeakness(password) {
       }
     }
   }
-  // Return here if no patters are used.
+  // Return here if no QWERTY patters are used.
   return {
     message: null,
     calculation: 0
